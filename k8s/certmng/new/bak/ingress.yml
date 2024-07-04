@@ -1,0 +1,47 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: echo-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    
+spec:
+  rules:
+    - host: echo3.ks.nms.com.vn
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: echo3
+                port:
+                  number: 80
+    - host: echo4.ks.nms.com.vn
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: echo4
+                port:
+                  number: 80
+    - host: "test9.ks.nms.com.vn"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: echo4
+                port:
+                  number: 80
+  tls:
+  - hosts:
+    - "echo3.ks.nms.com.vn"
+    #- "echo4.ks.nms.com.vn"
+    - "*.ks.nms.com.vn"  
+    secretName: ks.nms.com.vn

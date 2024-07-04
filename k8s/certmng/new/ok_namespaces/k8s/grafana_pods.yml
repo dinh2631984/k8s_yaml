@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: monitor-grafana-svc
+  namespace: monitor
+spec:
+  ports:
+    - name: https
+      port: 443
+      targetPort: 3000
+  selector:
+    app: monitor-grafana-pod
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monitor-grafana-dep
+  namespace: monitor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: monitor-grafana-pod
+  revisionHistoryLimit: 5
+  progressDeadlineSeconds: 300
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: monitor-grafana-pod
+      namespace: monitor
+    spec:
+      containers:
+        - name: monitor-grafana-pod
+          image: reg.nms.com.vn/k8s_grafana
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: gra-volume
+              mountPath: /var/lib/grafana
+          ports:
+            - containerPort: 3000
+      volumes:
+        - name: gra-volume
+          nfs:
+            server: 192.168.88.118
+            path: /etc/ks_data/monitor_config/grafana
+      restartPolicy: Always

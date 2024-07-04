@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unifi-dep
+  namespace: reverse-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: unifi-app-pod
+  revisionHistoryLimit: 5
+  progressDeadlineSeconds: 300
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: unifi-app-pod
+    spec:
+      containers:
+        - name: unifi-pod
+          image: reg.nms.com.vn/k8s_unifi
+          volumeMounts:
+            - name: unifi-volume
+              mountPath: /var/lib/unifi
+          ports:
+            - containerPort: 8080
+            - containerPort: 8443
+      volumes:
+        - name: unifi-volume
+          nfs:
+            server: 192.168.88.118
+            path: /etc/ks_data/unifi_data

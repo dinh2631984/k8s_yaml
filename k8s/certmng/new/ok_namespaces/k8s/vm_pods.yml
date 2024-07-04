@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: monitor-vm-svc
+  namespace: monitor
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+    - name: https
+      port: 443
+      targetPort: 443
+  selector:
+    app: monitor-vm-pod
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monitor-vm-dep
+  namespace: monitor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: monitor-vm-pod
+  revisionHistoryLimit: 5
+  progressDeadlineSeconds: 300
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: monitor-vm-pod
+      namespace: monitor
+    spec:
+      containers:
+        - name: monitor-vm-pod
+          image: reg.nms.com.vn/k8s_vmesxi
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: vm-volume
+              mountPath: /etc/telegraf
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+          env:
+            - name: ECS
+              value: "NMS"
+      volumes:
+        - name: vm-volume
+          nfs:
+            server: 192.168.88.118
+            path: /etc/ks_data/monitor_config/telegraf
+      restartPolicy: Always

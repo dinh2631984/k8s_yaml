@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ks.nms.com.vn
+  namespace: default
+spec:
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  secretName: ks.nms.com.vn
+  commonName: "*.ks.nms.com.vn"
+  dnsNames:
+    - "ks.nms.com.vn"
+    #- "echo2.ks.nms.com.vn"
+    - "*.ks.nms.com.vn"

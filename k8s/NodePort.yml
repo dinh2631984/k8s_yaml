@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodeport
+spec:
+  type: NodePort
+  ports:
+    - name: http-node
+      port: 8080  ### Cluster Port
+      targetPort: 80 ###  Application port in container
+      nodePort: 30050  ###  External port on every Cluster node (NodePort)
+    - name: https-node
+      port: 8443  ### Cluster Port
+      targetPort: 443 ###  Application port in container
+      nodePort: 30443  ###  External port on every Cluster node (NodePort)
+  selector:
+    app: reverse-proxy

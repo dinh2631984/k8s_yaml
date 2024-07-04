@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: monitor-influxdb-svc
+  namespace: monitor
+spec:
+  ports:
+    - name: https
+      port: 443
+      targetPort: 8086
+  selector:
+    app: monitor-influxdb-pod
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monitor-influxdb-dep
+  namespace: monitor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: monitor-influxdb-pod
+  revisionHistoryLimit: 5
+  progressDeadlineSeconds: 300
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: monitor-influxdb-pod
+      namespace: monitor
+    spec:
+      containers:
+        - name: monitor-influxdb-pod
+          image: reg.nms.com.vn/k8s_influxdb
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: influxdb-volume
+              mountPath: /root/.influxdbv2
+          ports:
+            - containerPort: 8086
+      volumes:
+        - name: influxdb-volume
+          nfs:
+            server: 192.168.88.118
+            path: /etc/ks_data/monitor_config/influxdb/data
+      restartPolicy: Always

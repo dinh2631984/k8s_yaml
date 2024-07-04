@@ -1,0 +1,232 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: reverse-proxy-ingress
+  namespace: reverse-proxy
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/proxy-body-size: 1000m
+      #nginx.ingress.kubernetes.io/proxy-body-size: "0"
+      #nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+      #nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+      #nginx.ingress.kubernetes.io/default-backend: "nms"
+    
+spec:
+  rules:
+    - host: nms.com.vn
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: reverse-proxy-svc
+                port:
+                  number: 443
+    - host: hr.nms.com.vn
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: reverse-proxy-svc
+                port:
+                  number: 443
+    - host: 3r.vpbx.vn
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: reverse-proxy-svc
+                port:
+                  number: 443
+                    #- host: influxdb.nms.com.vn
+                    # http:
+                    #paths:
+                    #- path: /
+                    # pathType: Prefix
+                    #  backend:
+                    #   service:
+                    # name: monitor-svc
+                    #  port:
+                    # number: 443
+    - host: ketnoigiasu.vn
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: reverse-proxy-svc
+                port:
+                  number: 443
+    - host: ketnoigiasu.com.vn
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: reverse-proxy-svc
+                port:
+                  number: 443
+    - host: ketnoigiasu.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: reverse-proxy-svc
+                port:
+                  number: 443
+### support.nms.com.vn
+    - host: support.nms.com.vn
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: reverse-proxy-svc
+                port:
+                  number: 443
+### end support.nms.com.vn
+### cdr.nms.com.vn
+    - host: cdr.nms.com.vn
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: reverse-proxy-svc
+                port:
+                  number: 443
+### end cdr.nms.com.vn
+### demo.pbx.nms.com.vn
+    - host: demo.pbx.nms.com.vn
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: reverse-proxy-svc
+                port:
+                  number: 443
+### end demo.pbx.nms.com.vn
+### onschool.vpbx.vn
+    - host: onschool.vpbx.vn
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: reverse-proxy-svc
+                port:
+                  number: 443
+### end onschool.vpbx.vn
+### test.nms.com.vn
+    - host: test.nms.com.vn
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: reverse-proxy-svc
+                port:
+                  number: 443
+### end test.nms.com.vn
+### test.pbx.nms.com.vn
+    - host: test.pbx.nms.com.vn
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: reverse-proxy-svc
+                port:
+                  number: 443
+### end test.pbx.nms.com.vn
+### thuydung.nms.com.vn
+    - host: thuydung.nms.com.vn
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: reverse-proxy-svc
+                port:
+                  number: 443
+### end thuydung.nms.com.vn
+### ticket-demo.nms.com.vn
+    - host: ticket-demo.nms.com.vn
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: reverse-proxy-svc
+                port:
+                  number: 443
+### end ticket-demo.nms.com.vn
+### reg.nms.com.vn
+    - host: reg.nms.com.vn
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: reverse-proxy-svc
+                port:
+                  number: 443
+### end support.nms.com.vn
+### reg.nms.com.vn
+    - host: unifi.nms.com.vn
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: lb-unifi 
+                port:
+                  number: 8443
+### end support.nms.com.vn
+  tls:
+  - hosts:
+    - "nms.com.vn"
+    - "hr.nms.com.vn"
+    - "3r.vpbx.vn"
+      #- "influxdb.nms.com.vn"
+    - "support.nms.com.vn"
+    - "cdr.nms.com.vn"
+    - "ketnoigiasu.vn"
+    - "ketnoigiasu.com.vn"
+    - "ketnoigiasu.com"
+    - "demo.pbx.nms.com.vn"
+    - "onschool.vpbx.vn"
+    - "test.nms.com.vn"
+    - "test.pbx.nms.com.vn"
+    - "thuydung.nms.com.vn"
+    - "ticket-demo.nms.com.vn"
+      # "nms.com.vn"
+    - "reg.nms.com.vn"
+    - "unifi.nms.com.vn"  
+    secretName: reverse-proxy-tls

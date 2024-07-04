@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: service-test
+spec:
+  replicas: 6
+  selector:
+    matchLabels:
+      service: test
+  template:
+    metadata:
+      labels:
+        service: test
+    spec:
+      containers:
+        - name: service-test-pod
+          image: monitorsystemall/nginx
+          ports:
+           - containerPort: 80  
+

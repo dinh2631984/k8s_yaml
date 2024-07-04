@@ -1,0 +1,73 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: all-domain-app
+  namespace: all-domain
+  labels:
+    app1: all-domain-app
+spec:
+  containers:
+    - name: all-domain-pod
+      image: hashicorp/http-echo
+      args:
+        - "-text=banana"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: all-domain-service
+  namespace: all-domain
+spec:
+  selector:
+    app1:  all-domain-app
+  ports:
+    - port: 5678 # Default port for image
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: all-domain-ingress
+  namespace: all-domain
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: 'test.nms.com.vn'
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: all-domain-service
+                port:
+                  number: 5678
+    - host: 'ok.nms.com.vn'
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: all-domain-service
+                port:
+                  number: 5678
+    - host: '123.nms.com.vn'
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: all-domain-service
+                port:
+                  number: 5678
+    - host: 'ketnoigiasu.vn'
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: all-domain-service
+                port:
+                  number: 80

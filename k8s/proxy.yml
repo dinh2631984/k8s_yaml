@@ -1,0 +1,24 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: reverse-proxy
+spec:
+  containers:
+    - name: app
+      image: monitorsystemall/nginx
+      volumeMounts:
+        - name: let-volume
+          mountPath: /etc/letsencrypt
+        - name: nix-volume
+          mountPath: /etc/nginx
+            #   command: ["/bin/sh"]
+            # args: ["-c", "sleep 500000"]
+  volumes:
+    - name: let-volume
+      nfs:
+        server: 192.168.88.141
+        path: /proxy/letsencrypt
+    - name: nix-volume
+      nfs:
+        server: 192.168.88.141
+        path: /proxy/nginx
